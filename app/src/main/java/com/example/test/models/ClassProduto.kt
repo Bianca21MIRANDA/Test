@@ -1,4 +1,7 @@
 package com.example.test.models
 
-class ClassProduto {
-}
+data class Produto(
+    val nome: String,
+    val preco: Double,
+    val emPromocao: Boolean
+)
