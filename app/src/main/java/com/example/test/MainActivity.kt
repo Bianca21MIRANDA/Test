@@ -6,17 +6,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.test.models.Pessoa
-import com.example.test.models.Produto
+import androidx.compose.ui.unit.dp
 import com.example.test.ui.theme.TestTheme
-import com.example.test.views.FichaPessoal
-import com.example.test.views.ListaDeProduto
-import com.example.test.views.PessoaCard
+import androidx.compose.runtime.*
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
+import com.example.test.models.*
+import com.example.test.services.ApiService
+import com.example.test.views.*
+import kotlinx.coroutines.launch
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,20 +39,21 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-   val produtos = listOf(
-       Produto("Arroz", 8.0, false),
-       Produto("Feijão", 10.5, true),
-       Produto("Cafe", 15.1, true),
-       Produto("Leite", 9.99, true),
-       Produto("Azeite Portugues", 89.99, true),
-       Produto("Queijo", 12.87, true),
-       Produto("Batata Escovada", 5.99, true),
-   )
+    var clients by remember { mutableStateOf<List<Client>>(emptyList()) }
+    var products by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var employees by remember { mutableStateOf<List<Employee>>(emptyList()) }
+    var sales by remember { mutableStateOf<List<SaleGet>>(emptyList()) }
 
-    ListaDeProduto(produtos)
-
+    LaunchedEffect(Unit) {
+        clients = ApiService.getClients()
+        products = ApiService.getProducts()
+        employees = ApiService.getEmployees()
+        sales = ApiService.getSales()
+    }
+    SwipePagerScreen(clients, products, employees, sales)
 }
 
 @Preview(showBackground = true)
